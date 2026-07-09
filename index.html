@@ -1,0 +1,1026 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Training Assessment Platform — Mfokolozi CX</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --cx-green: #2d9e4f;
+    --cx-green-light: #3db862;
+    --cx-dark: #0f1923;
+    --cx-navy: #162032;
+    --cx-mid: #1e2e42;
+    --cx-card: #243347;
+    --cx-border: #2e4060;
+    --cx-text: #e8edf3;
+    --cx-muted: #7a90a8;
+    --cx-accent: #f0c040;
+    --radius: 10px;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'DM Sans', sans-serif; background: var(--cx-dark); color: var(--cx-text); min-height: 100vh; }
+
+  header {
+    background: var(--cx-navy); border-bottom: 2px solid var(--cx-green);
+    padding: 0 2rem; position: sticky; top: 0; z-index: 100;
+    display: flex; align-items: center; gap: 1.5rem; height: 64px;
+  }
+  .logo-dot { width: 14px; height: 14px; background: var(--cx-green); border-radius: 50%; flex-shrink: 0; }
+  .header-title { font-family: 'Playfair Display', serif; font-size: 1.05rem; color: var(--cx-text); }
+  .header-sub { font-size: 0.75rem; color: var(--cx-muted); font-weight: 300; letter-spacing: 0.05em; text-transform: uppercase; }
+  .header-info { margin-left: auto; text-align: right; }
+
+  .nav-tabs { background: var(--cx-navy); border-bottom: 1px solid var(--cx-border); display: flex; padding: 0 2rem; gap: 0; overflow-x: auto; }
+  .tab-btn { padding: 0.9rem 1.5rem; background: none; border: none; color: var(--cx-muted); font-family: 'DM Sans', sans-serif; font-size: 0.85rem; font-weight: 500; cursor: pointer; border-bottom: 3px solid transparent; transition: all 0.2s; white-space: nowrap; }
+  .tab-btn:hover { color: var(--cx-text); }
+  .tab-btn.active { color: var(--cx-green-light); border-bottom-color: var(--cx-green); }
+
+  .hero { background: linear-gradient(135deg, var(--cx-navy) 0%, var(--cx-mid) 100%); padding: 3rem 2rem 2.5rem; text-align: center; border-bottom: 1px solid var(--cx-border); }
+  .hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 4vw, 2.8rem); color: var(--cx-text); line-height: 1.2; margin-bottom: 0.75rem; }
+  .hero h1 span { color: var(--cx-green-light); }
+  .hero p { color: var(--cx-muted); font-size: 0.95rem; max-width: 560px; margin: 0 auto 2rem; line-height: 1.6; }
+  .assessment-cards { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; max-width: 900px; margin: 0 auto; }
+  .assessment-card { background: var(--cx-card); border: 1px solid var(--cx-border); border-radius: var(--radius); padding: 1.4rem 1.6rem; cursor: pointer; transition: all 0.2s; text-align: left; flex: 1; min-width: 220px; max-width: 270px; }
+  .assessment-card:hover { border-color: var(--cx-green); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(45,158,79,0.15); }
+  .card-icon { font-size: 1.6rem; margin-bottom: 0.6rem; }
+  .card-title { font-weight: 600; font-size: 0.9rem; margin-bottom: 0.3rem; color: var(--cx-text); }
+  .card-desc { font-size: 0.78rem; color: var(--cx-muted); line-height: 1.5; }
+  .card-badge { display: inline-block; margin-top: 0.6rem; padding: 0.2rem 0.6rem; background: rgba(45,158,79,0.15); border: 1px solid rgba(45,158,79,0.3); border-radius: 20px; font-size: 0.7rem; color: var(--cx-green-light); font-weight: 500; }
+
+  .panel { display: none; padding: 2rem; max-width: 860px; margin: 0 auto; }
+  .panel.active { display: block; }
+
+  .section-header { margin-bottom: 1.8rem; padding-bottom: 1rem; border-bottom: 1px solid var(--cx-border); }
+  .section-header h2 { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: var(--cx-text); margin-bottom: 0.3rem; }
+  .section-header p { color: var(--cx-muted); font-size: 0.85rem; }
+
+  .form-row { display: flex; gap: 1rem; margin-bottom: 1rem; flex-wrap: wrap; }
+  .form-group { flex: 1; min-width: 200px; }
+  label { display: block; font-size: 0.8rem; font-weight: 500; color: var(--cx-muted); margin-bottom: 0.4rem; text-transform: uppercase; letter-spacing: 0.05em; }
+  input[type="text"], select, textarea { width: 100%; background: var(--cx-card); border: 1px solid var(--cx-border); border-radius: 6px; padding: 0.65rem 0.9rem; color: var(--cx-text); font-family: 'DM Sans', sans-serif; font-size: 0.9rem; transition: border-color 0.2s; outline: none; }
+  input[type="text"]:focus, select:focus, textarea:focus { border-color: var(--cx-green); box-shadow: 0 0 0 3px rgba(45,158,79,0.12); }
+  textarea { resize: vertical; min-height: 80px; }
+  select option { background: var(--cx-card); }
+
+  .quiz-progress { background: var(--cx-card); border-radius: var(--radius); padding: 1rem 1.4rem; margin-bottom: 1.5rem; display: flex; align-items: center; gap: 1rem; }
+  .progress-bar-wrap { flex: 1; height: 6px; background: var(--cx-border); border-radius: 3px; overflow: hidden; }
+  .progress-bar-fill { height: 100%; background: var(--cx-green); border-radius: 3px; transition: width 0.3s ease; width: 0%; }
+  .progress-label { font-size: 0.8rem; color: var(--cx-muted); white-space: nowrap; }
+
+  .section-label { display: inline-block; background: rgba(45,158,79,0.12); border: 1px solid rgba(45,158,79,0.25); color: var(--cx-green-light); font-size: 0.72rem; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; padding: 0.25rem 0.75rem; border-radius: 20px; margin-bottom: 1.2rem; }
+
+  .question-block { background: var(--cx-card); border: 1px solid var(--cx-border); border-radius: var(--radius); padding: 1.4rem 1.6rem; margin-bottom: 1rem; transition: border-color 0.2s; }
+  .question-block.answered { border-color: rgba(45,158,79,0.3); }
+  .question-block.correct { border-color: var(--cx-green); background: rgba(45,158,79,0.07); }
+  .question-block.incorrect { border-color: #e05555; background: rgba(224,85,85,0.06); }
+  .q-number { font-size: 0.72rem; font-weight: 600; color: var(--cx-muted); letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 0.5rem; }
+  .q-text { font-size: 0.92rem; font-weight: 500; color: var(--cx-text); line-height: 1.55; margin-bottom: 1rem; }
+  .options { display: flex; flex-direction: column; gap: 0.45rem; }
+  .option-label { display: flex; align-items: flex-start; gap: 0.7rem; cursor: pointer; padding: 0.5rem 0.7rem; border-radius: 6px; border: 1px solid transparent; transition: all 0.15s; }
+  .option-label:hover { background: rgba(255,255,255,0.04); border-color: var(--cx-border); }
+  .option-label input[type="radio"] { display: none; }
+  .option-indicator { width: 18px; height: 18px; border-radius: 50%; border: 2px solid var(--cx-border); flex-shrink: 0; margin-top: 1px; display: flex; align-items: center; justify-content: center; font-size: 10px; font-weight: 700; transition: all 0.15s; }
+  .option-label.selected .option-indicator { border-color: var(--cx-green); background: var(--cx-green); color: white; }
+  .option-label.show-correct { background: rgba(45,158,79,0.12); border-color: var(--cx-green); }
+  .option-label.show-wrong { background: rgba(224,85,85,0.1); border-color: #e05555; }
+  .option-text-wrap { display: flex; align-items: flex-start; gap: 0.6rem; flex: 1; }
+  .option-text { font-size: 0.87rem; color: var(--cx-text); line-height: 1.45; }
+
+  /* RESULTS PANEL */
+  .results-panel { display: none; background: var(--cx-card); border: 1px solid var(--cx-green); border-radius: var(--radius); padding: 2rem; margin-bottom: 2rem; animation: fadeUp 0.4s ease; }
+  .results-panel.visible { display: block; }
+  @keyframes fadeUp { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+
+  .score-circle { width: 110px; height: 110px; border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 1rem; position: relative; }
+  .score-inner { width: 82px; height: 82px; background: var(--cx-card); border-radius: 50%; display: flex; flex-direction: column; align-items: center; justify-content: center; }
+  .score-number { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 700; color: var(--cx-text); line-height: 1; }
+  .score-pct { font-size: 0.7rem; color: var(--cx-muted); }
+  .result-title { font-family: 'Playfair Display', serif; font-size: 1.3rem; margin-bottom: 0.4rem; text-align:center; }
+  .result-subtitle { color: var(--cx-muted); font-size: 0.85rem; margin-bottom: 1.5rem; text-align:center; }
+
+  .result-breakdown { display: flex; gap: 1.5rem; justify-content: center; flex-wrap: wrap; font-size: 0.82rem; margin-bottom: 1.8rem; }
+  .breakdown-item { display: flex; align-items: center; gap: 0.4rem; color: var(--cx-muted); }
+  .breakdown-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+  .dot-correct { background: var(--cx-green); }
+  .dot-wrong { background: #e05555; }
+  .dot-skip { background: var(--cx-muted); }
+
+  /* SECTIONAL SCORES */
+  .sectional-scores { border-top: 1px solid var(--cx-border); padding-top: 1.4rem; }
+  .sectional-title { font-size: 0.75rem; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: var(--cx-muted); margin-bottom: 1rem; text-align: center; }
+  .section-score-row { display: flex; align-items: center; gap: 0.8rem; margin-bottom: 0.75rem; }
+  .section-score-name { font-size: 0.8rem; color: var(--cx-text); width: 220px; flex-shrink: 0; line-height: 1.3; }
+  .section-score-bar-wrap { flex: 1; height: 8px; background: var(--cx-border); border-radius: 4px; overflow: hidden; }
+  .section-score-bar { height: 100%; border-radius: 4px; transition: width 0.6s ease; }
+  .section-score-val { font-size: 0.78rem; font-weight: 600; color: var(--cx-text); width: 52px; text-align: right; flex-shrink: 0; }
+
+  .q-section-divider { display: flex; align-items: center; gap: 1rem; margin: 2rem 0 1.2rem; }
+  .q-section-divider span { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--cx-green-light); white-space: nowrap; background: var(--cx-dark); padding: 0 0.5rem; }
+  .q-section-divider::before, .q-section-divider::after { content: ''; flex: 1; height: 1px; background: var(--cx-border); }
+
+  /* SELF-ASSESSMENT TABLE */
+  .rating-table { width: 100%; border-collapse: collapse; font-size: 0.85rem; margin-bottom: 1.5rem; }
+  .rating-table th { background: var(--cx-mid); color: var(--cx-muted); font-weight: 500; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.05em; padding: 0.7rem 0.8rem; text-align: center; border-bottom: 2px solid var(--cx-border); }
+  .rating-table th:first-child { text-align: left; }
+  .rating-table td { padding: 0.75rem 0.8rem; border-bottom: 1px solid var(--cx-border); vertical-align: middle; }
+  .rating-table tr:last-child td { border-bottom: none; }
+  .rating-table tr:hover td { background: rgba(255,255,255,0.02); }
+  .rating-table td:first-child { color: var(--cx-text); font-size: 0.83rem; line-height: 1.5; }
+  .rating-table td.num-cell { text-align: center; }
+  .rating-table input[type="radio"] { display: none; }
+  .rating-dot { display: inline-block; width: 22px; height: 22px; border-radius: 50%; border: 2px solid var(--cx-border); cursor: pointer; transition: all 0.15s; }
+  .rating-table input[type="radio"]:checked + .rating-dot { background: var(--cx-green); border-color: var(--cx-green); }
+
+  /* FINANCE FORM */
+  .rating-row { background: var(--cx-card); border: 1px solid var(--cx-border); border-radius: var(--radius); padding: 1.2rem 1.4rem; margin-bottom: 0.8rem; }
+  .rating-q-title { font-weight: 500; font-size: 0.9rem; margin-bottom: 0.25rem; color: var(--cx-text); }
+  .rating-q-sub { font-size: 0.8rem; color: var(--cx-muted); margin-bottom: 0.8rem; }
+  .star-row { display: flex; gap: 0.5rem; align-items: center; }
+  .star-btn { width: 36px; height: 36px; border-radius: 6px; border: 2px solid var(--cx-border); background: none; color: var(--cx-muted); font-size: 0.82rem; font-weight: 700; cursor: pointer; transition: all 0.15s; font-family: 'DM Sans', sans-serif; }
+  .star-btn:hover, .star-btn.active { background: var(--cx-green); border-color: var(--cx-green); color: white; }
+  .star-labels { display: flex; justify-content: space-between; margin-top: 0.3rem; font-size: 0.68rem; color: var(--cx-muted); }
+  .radio-group { display: flex; flex-direction: column; gap: 0.5rem; margin-top: 0.5rem; }
+  .radio-label { display: flex; align-items: center; gap: 0.7rem; cursor: pointer; font-size: 0.87rem; color: var(--cx-text); padding: 0.5rem 0.7rem; border-radius: 6px; border: 1px solid transparent; transition: all 0.15s; }
+  .radio-label:hover { background: rgba(255,255,255,0.03); border-color: var(--cx-border); }
+  .radio-label input[type="radio"] { display: none; }
+  .radio-custom { width: 16px; height: 16px; border-radius: 50%; border: 2px solid var(--cx-border); flex-shrink: 0; transition: all 0.15s; }
+  .radio-label input:checked ~ .radio-custom { border-color: var(--cx-green); background: var(--cx-green); box-shadow: inset 0 0 0 3px var(--cx-card); }
+
+  .btn { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.7rem 1.6rem; border-radius: 7px; border: none; font-family: 'DM Sans', sans-serif; font-size: 0.88rem; font-weight: 600; cursor: pointer; transition: all 0.2s; text-decoration: none; }
+  .btn-primary { background: var(--cx-green); color: white; }
+  .btn-primary:hover { background: var(--cx-green-light); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(45,158,79,0.3); }
+  .btn-outline { background: transparent; border: 1px solid var(--cx-border); color: var(--cx-muted); }
+  .btn-outline:hover { border-color: var(--cx-green); color: var(--cx-green-light); }
+  .btn-actions { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 1.5rem; padding-top: 1.5rem; border-top: 1px solid var(--cx-border); }
+
+  .success-msg { display: none; background: rgba(45,158,79,0.1); border: 1px solid var(--cx-green); border-radius: var(--radius); padding: 1.5rem; text-align: center; animation: fadeUp 0.4s ease; }
+  .success-msg.visible { display: block; }
+  .success-msg h3 { font-family: 'Playfair Display', serif; margin-bottom: 0.4rem; }
+  .success-msg p { color: var(--cx-muted); font-size: 0.85rem; }
+
+  /* ORG FIELD */
+  .org-banner { background: rgba(240,192,64,0.08); border: 1px solid rgba(240,192,64,0.25); border-radius: var(--radius); padding: 0.9rem 1.2rem; margin-bottom: 1.5rem; font-size: 0.84rem; color: var(--cx-accent); }
+
+  footer { margin-top: 4rem; padding: 2rem; text-align: center; border-top: 1px solid var(--cx-border); color: var(--cx-muted); font-size: 0.78rem; }
+  ::-webkit-scrollbar { width: 6px; }
+  ::-webkit-scrollbar-track { background: var(--cx-dark); }
+  ::-webkit-scrollbar-thumb { background: var(--cx-border); border-radius: 3px; }
+
+  @media (max-width: 600px) {
+    header { padding: 0 1rem; }
+    .panel { padding: 1.2rem 1rem; }
+    .nav-tabs { padding: 0 0.5rem; }
+    .tab-btn { padding: 0.8rem 0.9rem; font-size: 0.78rem; }
+    .assessment-cards { flex-direction: column; align-items: center; }
+    .assessment-card { max-width: 100%; }
+    .section-score-name { width: 130px; font-size: 0.72rem; }
+  }
+</style>
+</head>
+<body>
+
+
+<div id="setupBanner" style="display:none; background:#7c2d12; color:#fef3c7; padding:0.8rem 1.5rem; font-family:'DM Sans',sans-serif; font-size:0.85rem; text-align:center; position:sticky; top:64px; z-index:99; border-bottom:2px solid #f97316;">
+  ⚠️ <strong>Facilitator setup required.</strong> Enter your Apps Script URL and a secret token, then click Save. This only needs to be done once on your device.
+  <div style="margin-top:0.6rem; display:flex; gap:0.5rem; justify-content:center; align-items:center; flex-wrap:wrap;">
+    <input id="urlInput" type="text" placeholder="https://script.google.com/macros/s/YOUR_ID/exec"
+      style="width:360px; max-width:80vw; padding:0.4rem 0.7rem; border-radius:5px; border:none; font-size:0.82rem; color:#111;">
+    <input id="tokenInput" type="password" placeholder="Secret token (e.g. mfocx2025)"
+      style="width:180px; max-width:40vw; padding:0.4rem 0.7rem; border-radius:5px; border:none; font-size:0.82rem; color:#111;">
+    <button onclick="saveScriptUrl()" style="padding:0.4rem 1rem; background:#f97316; color:white; border:none; border-radius:5px; cursor:pointer; font-weight:600; font-size:0.82rem;">Save &amp; Connect</button>
+    <button onclick="document.getElementById('setupBanner').style.display='none'" style="padding:0.4rem 0.7rem; background:transparent; color:#fef3c7; border:1px solid #fef3c7; border-radius:5px; cursor:pointer; font-size:0.82rem;">Dismiss</button>
+  </div>
+  <div style="font-size:0.72rem; margin-top:0.4rem; opacity:0.8;">The URL and token are saved only in your browser — never visible in the page source.</div>
+</div>
+<header>
+  <div class="logo-dot"></div>
+  <div>
+    <div class="header-title">Mfokolozi CX</div>
+    <div class="header-sub">Customer Service Excellence</div>
+  </div>
+  <div class="header-info" id="headerInfo" style="display:none">
+    <div style="font-size:0.75rem; color:var(--cx-muted)">Participant</div>
+    <div id="headerName" style="font-size:0.85rem; font-weight:600; color:var(--cx-green-light)"></div>
+  </div>
+</header>
+
+<nav class="nav-tabs">
+  <button class="tab-btn active" onclick="showTab('home')">Home</button>
+  <button class="tab-btn" onclick="showTab('pre')">Pre-Training Survey</button>
+  <button class="tab-btn" onclick="showTab('final')">Final Assessment</button>
+  <button class="tab-btn" onclick="showTab('finance')">Finance CS Form</button>
+</nav>
+
+<!-- HOME -->
+<div id="tab-home" class="panel active">
+  <div class="hero">
+    <h1>Customer Service<br><span>Excellence Programme</span></h1>
+    <p>Welcome to the Assessment Platform. Complete your assessments below — the Final Assessment gives instant scored results.</p>
+    <div class="assessment-cards">
+      <div class="assessment-card" onclick="showTab('pre')">
+        <div class="card-icon">📋</div>
+        <div class="card-title">Pre-Training Survey</div>
+        <div class="card-desc">Help us understand your current knowledge and expectations before training begins.</div>
+        <div class="card-badge">Self-Assessment</div>
+      </div>
+      <div class="assessment-card" onclick="showTab('final')">
+        <div class="card-icon">📝</div>
+        <div class="card-title">Final Assessment</div>
+        <div class="card-desc">50 multiple-choice questions across all course topics. Instant sectional results on submission.</div>
+        <div class="card-badge">50 Questions · Scored</div>
+      </div>
+      <div class="assessment-card" onclick="showTab('finance')">
+        <div class="card-icon">💼</div>
+        <div class="card-title">Finance CX Evaluation</div>
+        <div class="card-desc">Role-play assessment form for evaluating finance staff customer service interactions.</div>
+        <div class="card-badge">Role-Play Evaluation</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- PRE-TRAINING SURVEY -->
+<div id="tab-pre" class="panel">
+  <div class="section-header">
+    <h2>Pre-Training Assessment</h2>
+    <p>Your responses help tailor the training to your needs. All answers are confidential.</p>
+  </div>
+  <div id="preForm">
+    <div class="org-banner">💡 Your facilitator will provide an <strong>Organisation Code</strong> — enter it below so your results are linked to the correct group report.</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" id="preName" placeholder="Your full name">
+      </div>
+      <div class="form-group">
+        <label>Organisation / Company</label>
+        <input type="text" id="preOrg" placeholder="Your organisation name">
+      </div>
+      <div class="form-group">
+        <label>Organisation Code (from facilitator)</label>
+        <input type="text" id="preOrgCode" placeholder="e.g. CLIENT-JUN25">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Primary Job Function</label>
+        <select id="preRole">
+          <option value="">Select your role</option>
+          <option>Frontline Customer Service Agent</option>
+          <option>Customer Support Specialist</option>
+          <option>Team Lead / Supervisor</option>
+          <option>Manager / Director</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Time in Current Role</label>
+        <select id="preTenure">
+          <option value="">Select duration</option>
+          <option>Less than 6 months</option>
+          <option>6 months - 2 years</option>
+          <option>2 - 5 years</option>
+          <option>5+ years</option>
+        </select>
+      </div>
+    </div>
+    <div class="section-label">Section 2 · Knowledge Self-Assessment</div>
+    <p style="font-size:0.82rem; color:var(--cx-muted); margin-bottom:1rem;">Rate your current confidence: 1 = Not Confident · 3 = Some Knowledge · 5 = Very Confident</p>
+    <table class="rating-table">
+      <thead><tr><th>Statement</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th></tr></thead>
+      <tbody id="selfRatingBody"></tbody>
+    </table>
+    <div class="section-label" style="margin-top:1.5rem">Section 3 · Challenges & Expectations</div>
+    <div style="margin-bottom:1rem">
+      <label>Q17 — Topics you're most interested in (list 2–3)</label>
+      <textarea id="preQ17" placeholder="e.g. Customer Value Proposition, Building Loyalty..."></textarea>
+    </div>
+    <div style="margin-bottom:1rem">
+      <label>Q18 — Topics most challenging or relevant to your current role (list 2–3)</label>
+      <textarea id="preQ18" placeholder="e.g. Handling difficult customers, Data use ethics..."></textarea>
+    </div>
+    <div style="margin-bottom:1rem">
+      <label>Q19 — Your biggest daily challenges with customers and their data</label>
+      <textarea id="preQ19" placeholder="Describe your day-to-day challenges..."></textarea>
+    </div>
+    <div style="margin-bottom:1.5rem">
+      <label>Q20 — One thing you hope to do differently after this training</label>
+      <textarea id="preQ20" placeholder="Describe the change you hope to make..." style="min-height:60px"></textarea>
+    </div>
+    <div class="btn-actions">
+      <button class="btn btn-primary" onclick="submitPre()">Submit Survey →</button>
+      <button class="btn btn-outline" onclick="clearForm('pre')">Clear Form</button>
+    </div>
+  </div>
+  <div class="success-msg" id="preSuccess">
+    <h3>✓ Survey Submitted</h3>
+    <p>Thank you! Your responses have been recorded. The facilitator will use this to tailor today's session.</p>
+  </div>
+</div>
+
+<!-- FINAL ASSESSMENT -->
+<div id="tab-final" class="panel">
+  <div class="section-header">
+    <h2>Final Assessment</h2>
+    <p>50 multiple-choice questions. Answer all, then submit for instant sectional results.</p>
+  </div>
+  <div id="finalIntro">
+    <div class="org-banner">💡 Enter your <strong>Organisation Code</strong> (from your facilitator) so results link to your group report.</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" id="finalName" placeholder="Your full name">
+      </div>
+      <div class="form-group">
+        <label>Organisation / Company</label>
+        <input type="text" id="finalOrg" placeholder="Your organisation">
+      </div>
+      <div class="form-group">
+        <label>Organisation Code</label>
+        <input type="text" id="finalOrgCode" placeholder="e.g. CLIENT-JUN25">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group" style="max-width:200px">
+        <label>Date</label>
+        <input type="text" id="finalDate" placeholder="Today's date">
+      </div>
+    </div>
+    <button class="btn btn-primary" onclick="startQuiz()">Begin Assessment →</button>
+  </div>
+
+  <div id="finalQuiz" style="display:none">
+    <div class="quiz-progress">
+      <div class="progress-bar-wrap"><div class="progress-bar-fill" id="progressBar"></div></div>
+      <div class="progress-label" id="progressLabel">0 / 50 answered</div>
+    </div>
+
+    <!-- RESULTS -->
+    <div id="resultsPanel" class="results-panel">
+      <div class="score-circle" id="scoreCircle">
+        <div class="score-inner">
+          <div class="score-number" id="scoreNum">0</div>
+          <div class="score-pct" id="scorePct">/ 50</div>
+        </div>
+      </div>
+      <div class="result-title" id="resultTitle"></div>
+      <div class="result-subtitle" id="resultSub"></div>
+      <div class="result-breakdown">
+        <div class="breakdown-item"><div class="breakdown-dot dot-correct"></div><span id="correctCount">0 correct</span></div>
+        <div class="breakdown-item"><div class="breakdown-dot dot-wrong"></div><span id="wrongCount">0 incorrect</span></div>
+        <div class="breakdown-item"><div class="breakdown-dot dot-skip"></div><span id="skipCount">0 unanswered</span></div>
+      </div>
+      <div class="sectional-scores">
+        <div class="sectional-title">Breakdown by Section</div>
+        <div id="sectionalBreakdown"></div>
+      </div>
+    </div>
+
+    <div id="quizQuestions"></div>
+
+    <div class="btn-actions">
+      <button class="btn btn-primary" onclick="submitQuiz()" id="submitBtn">Submit Assessment →</button>
+      <button class="btn btn-outline" onclick="resetQuiz()">Reset</button>
+    </div>
+  </div>
+</div>
+
+<!-- FINANCE CS FORM -->
+<div id="tab-finance" class="panel">
+  <div class="section-header">
+    <h2>Finance Customer Service Assessment</h2>
+    <p>Role-play evaluation form — to be completed by the employee being assessed.</p>
+  </div>
+  <div id="financeForm">
+    <div class="form-row">
+      <div class="form-group">
+        <label>Finance Staff Member Name</label>
+        <input type="text" id="finStaff" placeholder="Staff member being assessed">
+      </div>
+      <div class="form-group">
+        <label>Employee Assessor Name</label>
+        <input type="text" id="finAssessor" placeholder="Name of assessor">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Department</label>
+        <input type="text" id="finDept" placeholder="Department">
+      </div>
+      <div class="form-group">
+        <label>Organisation Code</label>
+        <input type="text" id="finOrgCode" placeholder="e.g. CLIENT-JUN25">
+      </div>
+      <div class="form-group">
+        <label>Date</label>
+        <input type="text" id="finDate" placeholder="Assessment date">
+      </div>
+    </div>
+    <div class="section-label" style="margin-top:1.5rem">Section A · Initial Reaction & Willingness to Comply</div>
+    <div class="rating-row">
+      <div class="rating-q-title">Q1. After the conversation, how willing would you be to comply with the proposed deduction plan?</div>
+      <div class="radio-group">
+        <label class="radio-label"><input type="radio" name="finQ1" value="1"><div class="radio-custom"></div>Completely unwilling</label>
+        <label class="radio-label"><input type="radio" name="finQ1" value="2"><div class="radio-custom"></div>Reluctant but would comply</label>
+        <label class="radio-label"><input type="radio" name="finQ1" value="3"><div class="radio-custom"></div>Neutral</label>
+        <label class="radio-label"><input type="radio" name="finQ1" value="4"><div class="radio-custom"></div>Willing</label>
+        <label class="radio-label"><input type="radio" name="finQ1" value="5"><div class="radio-custom"></div>Fully willing and comfortable</label>
+      </div>
+    </div>
+    <div class="section-label" style="margin-top:1.5rem">Section B · Service Evaluation (1 = Very Poor · 5 = Excellent)</div>
+    <div id="financeRatings"></div>
+    <div class="section-label" style="margin-top:1.5rem">Section C · Reflection Questions</div>
+    <div style="margin-bottom:1rem">
+      <label>Q8 — When you first heard the news, how did you feel?</label>
+      <textarea id="finQ8" placeholder="Describe your initial reaction..."></textarea>
+    </div>
+    <div style="margin-bottom:1rem">
+      <label>Q9 — What did the finance staff member do well?</label>
+      <textarea id="finQ9" placeholder="Describe their strengths..."></textarea>
+    </div>
+    <div style="margin-bottom:1rem">
+      <label>Q10 — What could they improve?</label>
+      <textarea id="finQ10" placeholder="Suggest areas for improvement..."></textarea>
+    </div>
+    <div class="rating-row">
+      <div class="rating-q-title">Q11 — If this situation were real, would you trust this person to handle financial matters fairly?</div>
+      <div class="radio-group">
+        <label class="radio-label"><input type="radio" name="finQ11" value="yes"><div class="radio-custom"></div>Yes</label>
+        <label class="radio-label"><input type="radio" name="finQ11" value="no"><div class="radio-custom"></div>No</label>
+        <label class="radio-label"><input type="radio" name="finQ11" value="notsure"><div class="radio-custom"></div>Not sure</label>
+      </div>
+      <div style="margin-top:0.8rem">
+        <label>Why?</label>
+        <textarea id="finQ11why" placeholder="Explain your answer..." style="min-height:60px"></textarea>
+      </div>
+    </div>
+    <div class="btn-actions">
+      <button class="btn btn-primary" onclick="submitFinance()">Submit Evaluation →</button>
+      <button class="btn btn-outline" onclick="clearForm('finance')">Clear Form</button>
+      <button class="btn btn-outline" onclick="printForm()">🖨 Print / PDF</button>
+    </div>
+  </div>
+  <div class="success-msg" id="financeSuccess">
+    <h3>✓ Evaluation Submitted</h3>
+    <p id="financeScoreMsg">Thank you! The facilitator will review the results.</p>
+  </div>
+</div>
+
+<footer>Mfokolozi CX Training Platform · Southern Africa &nbsp; 
+<p>© 2026 </p>
+</footer>
+
+<script>
+// =====================================================================
+// CONFIGURATION — set your Google Apps Script Web App URL here
+// =====================================================================
+// ── BACKEND CONFIG ───────────────────────────────────────────────────────
+// The Apps Script URL and secret token are NOT stored in this source code.
+// They are entered once by the facilitator via the admin banner below,
+// then stored in the browser's localStorage — invisible to participants.
+// Even if someone finds the Apps Script URL, submissions without the
+// correct secret token are silently rejected by the backend.
+// ─────────────────────────────────────────────────────────────────────────
+let APPS_SCRIPT_URL = '';
+let SUBMIT_TOKEN = '';
+// =====================================================================
+
+// =====================
+// STATIC DATA
+// =====================
+const SELF_RATINGS = [
+  "Identify Customer Types: I can categorize customers based on their needs, behaviors, or value to the organization.",
+  "Service vs. Satisfaction: I can clearly explain the difference between customer service (an action) and customer satisfaction (a feeling).",
+  "Measuring Performance: I am familiar with key metrics (e.g., NPS, CSAT, CES, Churn) and how organizations use them.",
+  "Customer Value Proposition: I understand what a customer value proposition is and how it differs from a product feature.",
+  "Building Loyalty: I know specific strategies for building customer relationships that lead to genuine loyalty.",
+  "Customer Retention: I can identify the key elements and strategies crucial for retaining customers.",
+  "Customer Experience (CX): I can explain what CX encompasses beyond just customer service.",
+  "Jobs-to-be-Done (JTBD): I am familiar with the JTBD framework and how to map a customer's core 'job.'",
+  "Customer-Centric Culture: I can define what a customer-centric culture looks like in practice.",
+  "Designing Culture: I understand the steps involved in designing and building a customer-centric culture.",
+  "Organizational Challenges: I can analyze common challenges companies face when becoming customer-centric.",
+  "Classifying Data: I understand how to classify different types of customer data.",
+  "Deriving Value from Data: I know where to find customer data and how it can be used for better decision-making.",
+  "Customer's Data Value: I can articulate the value that data collection provides back to the customer."
+];
+
+const FINANCE_RATINGS = [
+  { q: "Clarity of Explanation", sub: "Did they explain the issue in simple, understandable language?" },
+  { q: "Transparency", sub: "Did you feel the information was open and honest?" },
+  { q: "Empathy", sub: "Did they acknowledge how this might affect you personally?" },
+  { q: "Professionalism", sub: "Were they calm, respectful, and composed?" },
+  { q: "Emotional Management", sub: "If you showed concern or frustration, did they handle it well?" },
+  { q: "Solution Orientation", sub: "Did they clearly explain what will happen next?" }
+];
+
+// Each question: { s?: sectionName, q: text, opts: [a,b,c,d], a: correctIndex(0-based) }
+// opts are in their ORIGINAL order; we shuffle at runtime and track where correct answer ends up
+const QUESTIONS_RAW = [
+  // ── Section 1 ──────────────────────────────────────────────────────
+  { s:"Section 1: Core Customer Service Principles", q:"The primary goal of customer service is to:", opts:["Sell as many products as possible","Provide support and assistance before, during, and after a purchase","Reduce company costs","Manage customer complaints"], a:1 },
+  { q:"Customer Satisfaction (CSAT) is best defined as:", opts:["A company's set of support activities","A measurement of a customer's feelings about a transaction","The same as customer loyalty","A metric for employee performance"], a:1 },
+  { q:"A customer who is highly likely to recommend your company to others is known as a:", opts:["Passive","Detractor","Promoter","Critic"], a:2 },
+  { q:'The "Customer Effort Score" (CES) measures:', opts:["How much effort an employee puts in","How easy it is for a customer to resolve an issue","The number of steps in a sales process","The cost of acquiring a customer"], a:1 },
+  { q:'The term "customer churn" refers to:', opts:["The rate at which customers are acquired","The amount of money customers spend","The percentage of customers who stop using a service","The rotation of customer service staff"], a:2 },
+  { q:"A customer journey map is used to:", opts:["Track a customer's physical location","Visualize every experience a customer has with a brand","Plan marketing campaigns","Set sales targets"], a:1 },
+  { q:"An example of a post-purchase touchpoint is:", opts:["A social media advertisement","The checkout process on a website","A customer support call after receiving a product","A storefront display"], a:2 },
+  { q:'The concept of "Voice of the Customer" (VoC) involves:', opts:["Recording all customer calls","Capturing customer expectations, preferences, and feedback","Training customers to use products","Setting the company's tone of voice for communication"], a:1 },
+  { q:"Customer Lifetime Value (LTV) is important because it:", opts:["Measures the cost of a single transaction","Predicts the net profit from a customer's future relationship","Calculates a customer's immediate satisfaction","Determines the price of a product"], a:1 },
+  { q:"A key element of customer retention is:", opts:["Focusing only on acquiring new customers","Building long-term relationships and loyalty","Offering the lowest prices in the market","Reducing customer service hours"], a:1 },
+  // ── Section 2 ──────────────────────────────────────────────────────
+  { s:"Section 2: Customer Personalities & Interaction Models", q:"A customer who is impatient, speaks quickly, and needs an immediate solution is best described as:", opts:["The Detailed Analyst","The Relationship Builder","The Hurried and Stressed","The Suspicious and Frustrated"], a:2 },
+  { q:'When helping a "Detailed Analyst" type of customer, the most effective approach is to:', opts:["Use vague and general language","Provide detailed, logical explanations and data","Rush through the solution","Focus on building a personal friendship"], a:1 },
+  { q:'The "Suspicious and Frustrated" customer primarily needs:', opts:["A quick, simple solution","Detailed technical specifications","Their feelings validated and a transparent resolution","A social conversation"], a:2 },
+  { q:"The LEARN model for service recovery stands for:", opts:["Listen, Explain, Answer, Resolve, Notify","Listen, Empathize, Apologize, Resolve, Next Steps","Learn, Engage, Action, Resolve, Notify","Listen, Evaluate, Apologize, Resolve, Notify"], a:1 },
+  { q:'In the LEARN model, the "E" for "Empathize" means:', opts:["Immediately solving the problem","Acknowledging and validating the customer's feelings","Explaining company policy","Transferring the customer to a manager"], a:1 },
+  { q:"The LAST model is particularly useful for:", opts:["First-time customer interactions","Situations where the company is clearly at fault","Sales conversations","Technical troubleshooting"], a:1 },
+  { q:"In the SCARF model, providing a clear timeline for resolution addresses the domain of:", opts:["Status","Certainty","Autonomy","Relatedness"], a:1 },
+  { q:"Giving a customer a choice between two solutions directly enhances their:", opts:["Status","Certainty","Autonomy","Fairness"], a:2 },
+  { q:"Treating a customer with respect and valuing their input primarily supports their sense of:", opts:["Status","Certainty","Autonomy","Fairness"], a:0 },
+  { q:"A customer who has had a previous negative experience is often hypersensitive to issues of:", opts:["Status","Certainty","Autonomy","Fairness"], a:3 },
+  // ── Section 3 ──────────────────────────────────────────────────────
+  { s:"Section 3: Customer Value Proposition (CVP) Canvas", q:"The main purpose of the CVP Canvas is to:", opts:["Design marketing brochures","Ensure product features are listed correctly","Achieve fit between customer needs and a company's offerings","Set financial targets for the year"], a:2 },
+  { q:"The right-hand side of the CVP Canvas focuses on:", opts:["The company's products","The customer's world and needs","The competitor's strategies","The pricing model"], a:1 },
+  { q:'"Customer Jobs" on the CVP Canvas refer to:', opts:["The professions of your customers","The tasks customers are trying to perform or the problems they are trying to solve","Employment opportunities at your company","The work done by your employees"], a:1 },
+  { q:"A customer's functional job might be 'drill a hole,' while their emotional job might be:", opts:['"Buy a drill"','"Feel competent by hanging a shelf to organize my home"','"Spend as little money as possible"','"Compare different power tools"'], a:1 },
+  { q:'"Customer Pains" are best described as:', opts:["Physical discomfort experienced by customers","Risks, obstacles, and negative outcomes customers experience or fear","The company's biggest challenges","The cost of manufacturing a product"], a:1 },
+  { q:"Which of the following is an example of a Customer Pain?", opts:["A product with ten features","A 24-hour customer service line","The fear of a complex setup process","A competitive price point"], a:2 },
+  { q:'"Customer Gains" are the:', opts:["Profits a company makes","Benefits, outcomes, and desires customers seek","Increases in market share","Advantages over competitors"], a:1 },
+  { q:"Which of the following is an example of a Customer Gain?", opts:["Reducing production costs","Saving time by using a service","Launching a new advertising campaign","Hiring new staff"], a:1 },
+  { q:"The left-hand side of the CVP Canvas outlines the:", opts:["Customer's demographic profile","Company's Value Map","Competitor's weaknesses","Regulatory environment"], a:1 },
+  { q:'"Products & Services" on the Value Map are:', opts:["The list of what the company offers to customers","The same as Customer Gains","The customer's wish list","The pain points experienced internally"], a:0 },
+  { q:'"Pain Relievers" describe how your products and services:', opts:["Generate revenue for the company","Alleviate or eliminate specific Customer Pains","Create new customer desires","Are manufactured and delivered"], a:1 },
+  { q:'If a customer\'s pain is "wasting time in long bank queues," a corresponding Pain Reliever could be:', opts:["A more comfortable waiting chair","A mobile app for banking transactions","Lower banking fees","Friendly bank tellers"], a:1 },
+  { q:'"Gain Creators" describe how your products and services:', opts:["Cause customer frustration","Produce specific Customer Gains","Reduce company expenses","Are advertised to the market"], a:1 },
+  { q:'If a customer\'s gain is "to feel organized and in control," a Gain Creator could be:', opts:["A product with a minimalist design","A project management tool that provides clear overviews and reminders","A discount on bulk purchases","A free trial period"], a:1 },
+  { q:'The "fit" in the CVP Canvas is achieved when:', opts:["The product is the cheapest on the market","The Value Map effectively addresses the Customer Profile","The marketing budget is sufficient","The company has a strong brand name"], a:1 },
+  // ── Section 4 ──────────────────────────────────────────────────────
+  { s:"Section 4: Data, Ethics, and Culture", q:"First-party data is characterized as being:", opts:["Collected directly from your own customers","Purchased from external data brokers","Inferred from social media trends","The least reliable form of data"], a:0 },
+  { q:"Using customer data to personalize product recommendations is an example of:", opts:["A breach of privacy","An ethical value exchange if it helps the customer","Always being a creepy practice","Third-party data usage"], a:1 },
+  { q:'The principle of "data minimization" suggests that companies should:', opts:["Collect as much customer data as possible","Only collect data that is directly relevant and necessary","Minimize the cost of data storage","Avoid using data altogether"], a:1 },
+  { q:"A key pillar of ethical data use is:", opts:["Secrecy about data practices","Transparency and obtaining consent","Using data before competitors can","Selling data to the highest bidder"], a:1 },
+  { q:"Zappos' customer service strategy was legendary because it focused on:", opts:["Minimizing call times to reduce costs",'Creating "WOW" experiences that built extreme loyalty',"Automating all customer interactions","Competing solely on price"], a:1 },
+  { q:"The Ritz-Carlton's $2,000 employee empowerment rule is an example of building a culture based on:", opts:["Strict financial controls","Trust and autonomy to delight guests","Centralized decision-making","Standardized scripts for all staff"], a:1 },
+  { q:"A customer-centric culture is one where:", opts:["The customer is always right, even when they are wrong","Customer success is prioritized across all departments","The customer service department handles all customer issues","Policies are never changed for any customer"], a:1 },
+  { q:'The "Service Recovery Paradox" refers to the phenomenon where:', opts:["Service failures are always expensive to fix","A customer who has a problem resolved excellently can become more loyal than one who never had a problem","It is impossible to recover from a serious service failure","Recovery efforts should be avoided to save costs"], a:1 },
+  { q:'A "WOW" moment in customer service is typically characterized by being:', opts:["Extremely expensive for the company","Unexpected, personal, and highly positive","A standard part of the company procedure","Focused solely on solving the immediate problem"], a:1 },
+  { q:"The primary goal of using customer feedback should be to:", opts:["Punish employees for mistakes","Drive improvements in products and services","Prove that management is listening","Create reports for shareholders"], a:1 },
+  { q:"A key challenge in building a customer-centric culture is often:", opts:["A lack of available technology","Siloed departments and conflicting internal goals","Customers who are too demanding","Government regulations"], a:1 },
+  { q:"Net Promoter Score (NPS) is calculated by:", opts:["Subtracting the percentage of Detractors from the percentage of Promoters","Averaging all customer satisfaction scores","Dividing the number of customers by the number of complaints","Measuring the average first response time"], a:0 },
+  { q:"A proactive customer service approach might involve:", opts:["Waiting for the customer to report a problem","Reaching out to customers to prevent issues before they occur","Reacting quickly once a problem is found","Using automated responses for all inquiries"], a:1 },
+  { q:"The ultimate business goal of improving customer service is to:", opts:["Increase customer lifetime value and drive growth","Reduce the size of the customer service team","Eliminate all customer complaints","Create a perfectly standardized experience"], a:0 },
+  { q:"The most important outcome of an effective customer service strategy is:", opts:["Short-term profit maximization","The creation of loyal customer advocates","The implementation of the latest technology","A flawless service record"], a:1 }
+];
+
+// Section metadata for scoring
+const SECTION_DEFS = [
+  { name: "Core Principles",        color: "#2d9e4f", start: 0,  end: 9  },
+  { name: "Personalities & Models", color: "#3a7bd5", start: 10, end: 19 },
+  { name: "CVP Canvas",             color: "#9b59b6", start: 20, end: 34 },
+  { name: "Data, Ethics & Culture", color: "#e67e22", start: 35, end: 49 }
+];
+
+// =====================
+// SHUFFLE LOGIC
+// =====================
+// Produce a shuffled version of each question's options at session start
+// Store: { shuffledOpts, correctShuffledIndex }
+let QUESTIONS = [];
+
+function shuffleArray(arr) {
+  const a = [...arr];
+  for (let i = a.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [a[i], a[j]] = [a[j], a[i]];
+  }
+  return a;
+}
+
+function buildShuffledQuestions() {
+  QUESTIONS = QUESTIONS_RAW.map(q => {
+    const correctText = q.opts[q.a];
+    const shuffled = shuffleArray(q.opts);
+    const newCorrectIdx = shuffled.indexOf(correctText);
+    return { ...q, shuffledOpts: shuffled, correctIdx: newCorrectIdx };
+  });
+}
+
+// =====================
+// INIT
+// =====================
+document.addEventListener('DOMContentLoaded', () => {
+  checkSetupBanner();
+  buildShuffledQuestions();
+  buildSelfRatingTable();
+  buildFinanceRatings();
+  buildQuiz();
+  const today = new Date().toLocaleDateString('en-ZA');
+  document.getElementById('finalDate').value = today;
+  document.getElementById('finDate').value = today;
+});
+
+function showTab(tab) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  const tabs = ['home','pre','final','finance'];
+  document.querySelectorAll('.tab-btn')[tabs.indexOf(tab)].classList.add('active');
+  window.scrollTo(0, 0);
+}
+
+// =====================
+// SELF RATING TABLE
+// =====================
+function buildSelfRatingTable() {
+  const tbody = document.getElementById('selfRatingBody');
+  SELF_RATINGS.forEach((stmt, i) => {
+    const tr = document.createElement('tr');
+    let cells = '';
+    for (let r = 1; r <= 5; r++) {
+      cells += `<td class="num-cell"><label><input type="radio" name="pre_r${i}" value="${r}"><span class="rating-dot"></span></label></td>`;
+    }
+    tr.innerHTML = `<td>${i+3}. ${stmt}</td>${cells}`;
+    tbody.appendChild(tr);
+  });
+}
+
+// =====================
+// FINANCE RATINGS
+// =====================
+function buildFinanceRatings() {
+  const container = document.getElementById('financeRatings');
+  FINANCE_RATINGS.forEach((item, i) => {
+    let stars = '';
+    for (let s = 1; s <= 5; s++) {
+      stars += `<button type="button" class="star-btn" data-group="fin_r${i}" data-val="${s}" onclick="selectStar(this,'fin_r${i}')">${s}</button>`;
+    }
+    container.innerHTML += `
+      <div class="rating-row">
+        <div class="rating-q-title">Q${i+2}. ${item.q}</div>
+        <div class="rating-q-sub">${item.sub}</div>
+        <div class="star-row" id="stars_fin_r${i}">${stars}</div>
+        <div class="star-labels"><span>Very Poor</span><span>Excellent</span></div>
+        <input type="hidden" id="val_fin_r${i}" value="">
+      </div>`;
+  });
+}
+
+function selectStar(btn, group) {
+  const val = parseInt(btn.dataset.val);
+  document.querySelectorAll(`[data-group="${group}"]`).forEach(b => {
+    b.classList.toggle('active', parseInt(b.dataset.val) <= val);
+  });
+  document.getElementById('val_' + group).value = val;
+}
+
+// =====================
+// QUIZ
+// =====================
+const answers = new Array(50).fill(null);
+
+function buildQuiz() {
+  const container = document.getElementById('quizQuestions');
+  let html = '';
+  let lastSection = '';
+  const letters = ['a','b','c','d'];
+
+  QUESTIONS.forEach((q, i) => {
+    if (q.s && q.s !== lastSection) {
+      lastSection = q.s;
+      html += `<div class="q-section-divider"><span>${q.s}</span></div>`;
+    }
+    let optsHtml = '';
+    q.shuffledOpts.forEach((opt, oi) => {
+      optsHtml += `
+        <label class="option-label" id="opt_${i}_${oi}" onclick="selectOption(${i},${oi})">
+          <input type="radio" name="q${i}" value="${oi}">
+          <div class="option-text-wrap">
+            <div class="option-indicator" id="ind_${i}_${oi}">${letters[oi]}</div>
+            <div class="option-text">${opt}</div>
+          </div>
+        </label>`;
+    });
+    html += `
+      <div class="question-block" id="qblock_${i}">
+        <div class="q-number">Question ${i+1} of 50</div>
+        <div class="q-text">${q.q}</div>
+        <div class="options">${optsHtml}</div>
+      </div>`;
+  });
+  container.innerHTML = html;
+}
+
+function selectOption(qi, oi) {
+  for (let x = 0; x < 4; x++) {
+    const lbl = document.getElementById(`opt_${qi}_${x}`);
+    if (lbl) {
+      lbl.classList.remove('selected');
+      const ind = document.getElementById(`ind_${qi}_${x}`);
+      if (ind) { ind.style.background=''; ind.style.borderColor=''; ind.style.color=''; }
+    }
+  }
+  answers[qi] = oi;
+  document.getElementById(`opt_${qi}_${oi}`).classList.add('selected');
+  const ind = document.getElementById(`ind_${qi}_${oi}`);
+  if (ind) { ind.style.background='var(--cx-green)'; ind.style.borderColor='var(--cx-green)'; ind.style.color='white'; }
+  updateProgress();
+}
+
+function updateProgress() {
+  const answered = answers.filter(a => a !== null).length;
+  document.getElementById('progressBar').style.width = (answered / 50 * 100) + '%';
+  document.getElementById('progressLabel').textContent = `${answered} / 50 answered`;
+}
+
+function startQuiz() {
+  const name = document.getElementById('finalName').value.trim();
+  if (!name) { alert('Please enter your name to begin.'); return; }
+  document.getElementById('finalIntro').style.display = 'none';
+  document.getElementById('finalQuiz').style.display = 'block';
+  document.getElementById('headerInfo').style.display = 'block';
+  document.getElementById('headerName').textContent = name;
+}
+
+function submitQuiz() {
+  const unanswered = answers.filter(a => a === null).length;
+  if (unanswered > 0 && !confirm(`You have ${unanswered} unanswered question(s). Submit anyway?`)) return;
+
+  let correct = 0, wrong = 0, skipped = 0;
+  const sectionScores = SECTION_DEFS.map(s => ({ ...s, correct: 0, total: s.end - s.start + 1 }));
+
+  QUESTIONS.forEach((q, i) => {
+    const block = document.getElementById(`qblock_${i}`);
+    block.classList.remove('answered');
+    const correctOpt = document.getElementById(`opt_${i}_${q.correctIdx}`);
+
+    if (answers[i] === null) {
+      skipped++;
+      block.classList.add('incorrect');
+      if (correctOpt) correctOpt.classList.add('show-correct');
+    } else if (answers[i] === q.correctIdx) {
+      correct++;
+      block.classList.add('correct');
+      if (correctOpt) correctOpt.classList.add('show-correct');
+      const sec = sectionScores.find(s => i >= s.start && i <= s.end);
+      if (sec) sec.correct++;
+    } else {
+      wrong++;
+      block.classList.add('incorrect');
+      document.getElementById(`opt_${i}_${answers[i]}`).classList.add('show-wrong');
+      if (correctOpt) correctOpt.classList.add('show-correct');
+    }
+  });
+
+  // Overall score
+  const pct = Math.round(correct / 50 * 100);
+  document.getElementById('scoreNum').textContent = correct;
+  document.getElementById('correctCount').textContent = `${correct} correct`;
+  document.getElementById('wrongCount').textContent = `${wrong} incorrect`;
+  document.getElementById('skipCount').textContent = `${skipped} unanswered`;
+
+  let title, sub;
+  if (pct >= 90) { title='🏆 Outstanding!'; sub=`You scored ${pct}% — exceptional mastery of customer service principles.`; }
+  else if (pct >= 75) { title='✓ Well Done!'; sub=`You scored ${pct}% — a strong result. Review highlighted questions to go further.`; }
+  else if (pct >= 60) { title='Good Effort'; sub=`You scored ${pct}% — a passing result. Focus on sections where answers were incorrect.`; }
+  else { title='Keep Practising'; sub=`You scored ${pct}%. Review the course material for areas you found challenging.`; }
+
+  document.getElementById('resultTitle').textContent = title;
+  document.getElementById('resultSub').textContent = sub;
+  document.getElementById('scoreCircle').style.background = `conic-gradient(var(--cx-green) ${pct*3.6}deg, var(--cx-border) ${pct*3.6}deg)`;
+
+  // Sectional breakdown
+  let breakdownHtml = '';
+  sectionScores.forEach(sec => {
+    const secPct = Math.round(sec.correct / sec.total * 100);
+    const barColor = secPct >= 75 ? '#2d9e4f' : secPct >= 50 ? '#e67e22' : '#e05555';
+    breakdownHtml += `
+      <div class="section-score-row">
+        <div class="section-score-name">${sec.name}</div>
+        <div class="section-score-bar-wrap">
+          <div class="section-score-bar" style="width:${secPct}%; background:${barColor}"></div>
+        </div>
+        <div class="section-score-val">${sec.correct}/${sec.total} <span style="color:var(--cx-muted);font-weight:400">(${secPct}%)</span></div>
+      </div>`;
+  });
+  document.getElementById('sectionalBreakdown').innerHTML = breakdownHtml;
+
+  document.getElementById('resultsPanel').classList.add('visible');
+  document.getElementById('submitBtn').style.display = 'none';
+  document.getElementById('resultsPanel').scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+  // Send to backend
+  sendToSheet('final_assessment', {
+    timestamp: new Date().toISOString(),
+    name: document.getElementById('finalName').value.trim(),
+    organisation: document.getElementById('finalOrg').value.trim(),
+    org_code: document.getElementById('finalOrgCode').value.trim(),
+    date: document.getElementById('finalDate').value,
+    total_score: correct,
+    total_pct: pct,
+    s1_score: sectionScores[0].correct, s1_total: sectionScores[0].total,
+    s2_score: sectionScores[1].correct, s2_total: sectionScores[1].total,
+    s3_score: sectionScores[2].correct, s3_total: sectionScores[2].total,
+    s4_score: sectionScores[3].correct, s4_total: sectionScores[3].total
+  });
+}
+
+function resetQuiz() {
+  if (!confirm('Reset all answers and start over?')) return;
+  buildShuffledQuestions(); // re-shuffle for new attempt
+  answers.fill(null);
+  document.getElementById('quizQuestions').innerHTML = '';
+  buildQuiz();
+  document.getElementById('resultsPanel').classList.remove('visible');
+  document.getElementById('submitBtn').style.display = '';
+  updateProgress();
+  window.scrollTo(0, 0);
+}
+
+// =====================
+// PRE-TRAINING SUBMIT
+// =====================
+function submitPre() {
+  const name = document.getElementById('preName').value.trim();
+  if (!name) { alert('Please enter your name.'); return; }
+
+  const ratings = {};
+  SELF_RATINGS.forEach((_, i) => {
+    const checked = document.querySelector(`input[name="pre_r${i}"]:checked`);
+    ratings[`r${i+3}`] = checked ? checked.value : '';
+  });
+
+  sendToSheet('pre_survey', {
+    timestamp: new Date().toISOString(),
+    name,
+    organisation: document.getElementById('preOrg').value.trim(),
+    org_code: document.getElementById('preOrgCode').value.trim(),
+    role: document.getElementById('preRole').value,
+    tenure: document.getElementById('preTenure').value,
+    ...ratings,
+    q17: document.getElementById('preQ17').value.trim(),
+    q18: document.getElementById('preQ18').value.trim(),
+    q19: document.getElementById('preQ19').value.trim(),
+    q20: document.getElementById('preQ20').value.trim()
+  });
+
+  document.getElementById('preForm').style.display = 'none';
+  document.getElementById('preSuccess').classList.add('visible');
+}
+
+// =====================
+// FINANCE SUBMIT
+// =====================
+function submitFinance() {
+  const staff = document.getElementById('finStaff').value.trim();
+  if (!staff) { alert('Please enter the finance staff member name.'); return; }
+
+  let total = 0, count = 0;
+  const ratings = {};
+  FINANCE_RATINGS.forEach((item, i) => {
+    const val = parseInt(document.getElementById(`val_fin_r${i}`).value);
+    ratings[`r${i+2}_${item.q.replace(/\s+/g,'_').toLowerCase()}`] = isNaN(val) ? '' : val;
+    if (!isNaN(val)) { total += val; count++; }
+  });
+
+  const q1 = document.querySelector('input[name="finQ1"]:checked');
+  const q11 = document.querySelector('input[name="finQ11"]:checked');
+  const grandTotal = total + (q1 ? parseInt(q1.value) : 0);
+
+  sendToSheet('finance_form', {
+    timestamp: new Date().toISOString(),
+    staff_name: staff,
+    assessor: document.getElementById('finAssessor').value.trim(),
+    department: document.getElementById('finDept').value.trim(),
+    org_code: document.getElementById('finOrgCode').value.trim(),
+    date: document.getElementById('finDate').value,
+    q1_willingness: q1 ? q1.value : '',
+    ...ratings,
+    total_score: grandTotal,
+    q8: document.getElementById('finQ8').value.trim(),
+    q9: document.getElementById('finQ9').value.trim(),
+    q10: document.getElementById('finQ10').value.trim(),
+    q11_trust: q11 ? q11.value : '',
+    q11_why: document.getElementById('finQ11why').value.trim()
+  });
+
+  document.getElementById('financeScoreMsg').textContent =
+    `Score: ${grandTotal}/30 (${Math.round(grandTotal/30*100)}%). The facilitator will review the results.`;
+  document.getElementById('financeForm').style.display = 'none';
+  document.getElementById('financeSuccess').classList.add('visible');
+}
+
+// =====================
+// BACKEND SUBMIT
+// =====================
+// Uses hidden iframe + form POST.
+// fetch() with no-cors silently strips Content-Type headers, so JSON never
+// reaches Apps Script. A real form POST via iframe works reliably cross-origin.
+function sendToSheet(formType, data) {
+  if (!APPS_SCRIPT_URL || APPS_SCRIPT_URL === 'YOUR_APPS_SCRIPT_URL_HERE') {
+    console.log('[Backend not configured] Would send:', formType, data);
+    return;
+  }
+  try {
+    const iframeName = 'cx_submit_' + Date.now();
+    const iframe = document.createElement('iframe');
+    iframe.name = iframeName;
+    iframe.style.display = 'none';
+    document.body.appendChild(iframe);
+
+    const form = document.createElement('form');
+    form.method = 'POST';
+    form.action = APPS_SCRIPT_URL;
+    form.target = iframeName;
+    form.style.display = 'none';
+
+    const addField = (name, value) => {
+      const input = document.createElement('input');
+      input.type = 'hidden';
+      input.name = name;
+      input.value = (value === null || value === undefined) ? '' : String(value);
+      form.appendChild(input);
+    };
+
+    addField('formType', formType);
+    addField('token', SUBMIT_TOKEN);
+    Object.entries(data).forEach(([k, v]) => addField(k, v));
+
+    document.body.appendChild(form);
+    form.submit();
+
+    setTimeout(() => {
+      try { document.body.removeChild(form); document.body.removeChild(iframe); } catch(e) {}
+    }, 6000);
+
+  } catch (err) {
+    console.warn('Sheet submission error:', err);
+  }
+}
+
+// =====================
+// HELPERS
+// =====================
+function clearForm(type) {
+  if (type === 'pre') {
+    ['preName','preOrg','preOrgCode','preQ17','preQ18','preQ19','preQ20'].forEach(id => document.getElementById(id).value = '');
+    document.getElementById('preRole').value = '';
+    document.getElementById('preTenure').value = '';
+    document.querySelectorAll('#selfRatingBody input[type="radio"]').forEach(r => r.checked = false);
+  } else if (type === 'finance') {
+    ['finStaff','finAssessor','finDept','finOrgCode','finQ8','finQ9','finQ10','finQ11why'].forEach(id => document.getElementById(id).value = '');
+    document.querySelectorAll('#financeForm input[type="radio"]').forEach(r => r.checked = false);
+    document.querySelectorAll('.star-btn').forEach(b => b.classList.remove('active'));
+    FINANCE_RATINGS.forEach((_, i) => document.getElementById(`val_fin_r${i}`).value = '');
+    document.getElementById('finDate').value = new Date().toLocaleDateString('en-ZA');
+  }
+}
+
+function printForm() { window.print(); }
+
+// =====================
+// URL CONFIGURATION
+// =====================
+(function() {
+  const savedUrl = localStorage.getItem('cx_script_url');
+  const savedToken = localStorage.getItem('cx_submit_token');
+  if (savedUrl && savedUrl.startsWith('https://script.google.com')) {
+    APPS_SCRIPT_URL = savedUrl;
+  }
+  if (savedToken) {
+    SUBMIT_TOKEN = savedToken;
+  }
+})();
+
+function saveScriptUrl() {
+  const url = document.getElementById('urlInput').value.trim();
+  const token = document.getElementById('tokenInput').value.trim();
+  if (!url.startsWith('https://script.google.com')) {
+    alert('That URL does not look right.\nIt should start with:\nhttps://script.google.com/macros/s/...');
+    return;
+  }
+  if (!token) {
+    alert('Please enter a secret token.\nThis must match the token set in your Apps Script.');
+    return;
+  }
+  localStorage.setItem('cx_script_url', url);
+  localStorage.setItem('cx_submit_token', token);
+  APPS_SCRIPT_URL = url;
+  SUBMIT_TOKEN = token;
+  document.getElementById('setupBanner').style.display = 'none';
+  alert('Connected! Google Sheets will now receive all submissions securely.');
+}
+
+function checkSetupBanner() {
+  const savedUrl = localStorage.getItem('cx_script_url');
+  const savedToken = localStorage.getItem('cx_submit_token');
+  if (!savedUrl || !savedUrl.startsWith('https://script.google.com') || !savedToken) {
+    document.getElementById('setupBanner').style.display = 'block';
+  }
+}
+</script>
+</body>
+</html>
