@@ -43,7 +43,8 @@
   .hero h1 { font-family: 'Playfair Display', serif; font-size: clamp(1.8rem, 4vw, 2.8rem); color: var(--cx-text); line-height: 1.2; margin-bottom: 0.75rem; }
   .hero h1 span { color: var(--cx-green-light); }
   .hero p { color: var(--cx-muted); font-size: 0.95rem; max-width: 560px; margin: 0 auto 2rem; line-height: 1.6; }
-  .assessment-cards { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; max-width: 900px; margin: 0 auto; }
+  .assessment-cards { display: flex; gap: 1rem; justify-content: center; flex-wrap: wrap; max-width: 1180px; margin: 0 auto; }
+  #tab-home { max-width: 1240px; }
   .assessment-card { background: var(--cx-card); border: 1px solid var(--cx-border); border-radius: var(--radius); padding: 1.4rem 1.6rem; cursor: pointer; transition: all 0.2s; text-align: left; flex: 1; min-width: 220px; max-width: 270px; }
   .assessment-card:hover { border-color: var(--cx-green); transform: translateY(-2px); box-shadow: 0 8px 24px rgba(45,158,79,0.15); }
   .card-icon { font-size: 1.6rem; margin-bottom: 0.6rem; }
@@ -209,10 +210,11 @@
 </header>
 
 <nav class="nav-tabs">
-  <button class="tab-btn active" onclick="showTab('home')">Home</button>
-  <button class="tab-btn" onclick="showTab('pre')">Pre-Training Survey</button>
-  <button class="tab-btn" onclick="showTab('final')">Final Assessment</button>
-  <button class="tab-btn" onclick="showTab('finance')">Finance CS Form</button>
+  <button class="tab-btn active" data-tab="home" onclick="showTab('home')">Home</button>
+  <button class="tab-btn" data-tab="pre" onclick="showTab('pre')">Pre-Training Survey</button>
+  <button class="tab-btn" data-tab="legal" onclick="showTab('legal')">Legal Pre-Survey</button>
+  <button class="tab-btn" data-tab="final" onclick="showTab('final')">Final Assessment</button>
+  <button class="tab-btn" data-tab="finance" onclick="showTab('finance')">Finance CS Form</button>
 </nav>
 
 <!-- HOME -->
@@ -226,6 +228,12 @@
         <div class="card-title">Pre-Training Survey</div>
         <div class="card-desc">Help us understand your current knowledge and expectations before training begins.</div>
         <div class="card-badge">Self-Assessment</div>
+      </div>
+      <div class="assessment-card" onclick="showTab('legal')">
+        <div class="card-icon">⚖️</div>
+        <div class="card-title">Legal Practitioners Pre-Training Survey</div>
+        <div class="card-desc">For attorneys, advocates, paralegals and legal support staff — tell us about your client service experience before training.</div>
+        <div class="card-badge">Self-Assessment · Legal</div>
       </div>
       <div class="assessment-card" onclick="showTab('final')">
         <div class="card-icon">📝</div>
@@ -319,6 +327,104 @@
   <div class="success-msg" id="preSuccess">
     <h3>✓ Survey Submitted</h3>
     <p>Thank you! Your responses have been recorded. The facilitator will use this to tailor today's session.</p>
+  </div>
+</div>
+
+<!-- LEGAL PRACTITIONERS PRE-TRAINING SURVEY -->
+<div id="tab-legal" class="panel">
+  <div class="section-header">
+    <h2>Legal Practitioners · Pre-Training Assessment</h2>
+    <p>Client service in legal practice. Your responses help tailor the training to your needs. All answers are confidential.</p>
+  </div>
+  <div id="legalForm">
+    <div class="org-banner">💡 Your facilitator will provide an <strong>Organisation Code</strong> — enter it below so your results are linked to the correct group report.</div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Full Name</label>
+        <input type="text" id="legName" placeholder="Your full name">
+      </div>
+      <div class="form-group">
+        <label>Firm / Organisation</label>
+        <input type="text" id="legOrg" placeholder="Your firm or organisation">
+      </div>
+      <div class="form-group">
+        <label>Organisation Code (from facilitator)</label>
+        <input type="text" id="legOrgCode" placeholder="e.g. CLIENT-JUN25">
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Role in Practice</label>
+        <select id="legRole">
+          <option value="">Select your role</option>
+          <option>Partner / Director</option>
+          <option>Attorney / Associate</option>
+          <option>Advocate</option>
+          <option>Candidate Attorney / Pupil</option>
+          <option>Paralegal / Legal Assistant</option>
+          <option>Legal Secretary / Receptionist</option>
+          <option>Practice Manager / Administration</option>
+          <option>In-house Legal Counsel</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Main Practice Area</label>
+        <select id="legPractice">
+          <option value="">Select practice area</option>
+          <option>Litigation / Dispute Resolution</option>
+          <option>Conveyancing / Property</option>
+          <option>Commercial / Corporate</option>
+          <option>Family Law</option>
+          <option>Criminal Law</option>
+          <option>Labour / Employment</option>
+          <option>Wills, Estates &amp; Trusts</option>
+          <option>General Practice</option>
+          <option>Other</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Time in Legal Practice</label>
+        <select id="legTenure">
+          <option value="">Select duration</option>
+          <option>Less than 2 years</option>
+          <option>2 - 5 years</option>
+          <option>5 - 10 years</option>
+          <option>10+ years</option>
+        </select>
+      </div>
+    </div>
+    <div class="section-label">Section 2 · Client Service Self-Assessment</div>
+    <p style="font-size:0.82rem; color:var(--cx-muted); margin-bottom:1rem;">Rate your current confidence: 1 = Not Confident · 3 = Some Knowledge · 5 = Very Confident</p>
+    <table class="rating-table">
+      <thead><tr><th>Statement</th><th>1</th><th>2</th><th>3</th><th>4</th><th>5</th></tr></thead>
+      <tbody id="legalRatingBody"></tbody>
+    </table>
+    <div class="section-label" style="margin-top:1.5rem">Section 3 · Challenges & Expectations</div>
+    <div style="margin-bottom:1rem">
+      <label>Q17 — Topics you're most interested in (list 2–3)</label>
+      <textarea id="legQ17" placeholder="e.g. Managing client expectations, Fee conversations, Client retention..."></textarea>
+    </div>
+    <div style="margin-bottom:1rem">
+      <label>Q18 — The most common client complaints or frustrations you encounter</label>
+      <textarea id="legQ18" placeholder="e.g. Slow feedback on matters, unclear billing, difficulty reaching the attorney..."></textarea>
+    </div>
+    <div style="margin-bottom:1rem">
+      <label>Q19 — Your biggest daily challenges in dealing with clients</label>
+      <textarea id="legQ19" placeholder="e.g. Anxious or emotional clients, unrealistic expectations, late payments..."></textarea>
+    </div>
+    <div style="margin-bottom:1.5rem">
+      <label>Q20 — One thing you hope to do differently with clients after this training</label>
+      <textarea id="legQ20" placeholder="Describe the change you hope to make..." style="min-height:60px"></textarea>
+    </div>
+    <div class="btn-actions">
+      <button class="btn btn-primary" onclick="submitLegal()">Submit Survey →</button>
+      <button class="btn btn-outline" onclick="clearForm('legal')">Clear Form</button>
+    </div>
+  </div>
+  <div class="success-msg" id="legalSuccess">
+    <h3>✓ Survey Submitted</h3>
+    <p>Thank you! Your responses have been recorded. The facilitator will use this to tailor the session to legal practice.</p>
   </div>
 </div>
 
@@ -509,6 +615,23 @@ const SELF_RATINGS = [
   "Customer's Data Value: I can articulate the value that data collection provides back to the customer."
 ];
 
+const LEGAL_RATINGS = [
+  "Client Types: I can recognise different types of clients (e.g. individual, corporate, anxious, repeat) and adapt my approach to each.",
+  "Service vs. Outcome: I can separate the quality of client service from the legal outcome of a matter.",
+  "Setting Expectations: I set realistic expectations about timelines, costs and likely outcomes at the start of a matter.",
+  "Plain Language: I can explain legal concepts, procedures and documents to clients without jargon.",
+  "Keeping Clients Informed: I proactively update clients on the progress of their matter, even when there is little news.",
+  "Fee Conversations: I discuss fees, estimates and invoices with clients confidently and transparently.",
+  "Difficult Clients: I can handle emotional, anxious or angry clients while keeping professional boundaries.",
+  "Delivering Bad News: I can communicate unfavourable news (e.g. an adverse judgment or delays) with empathy and clarity.",
+  "Responsiveness: I consistently respond to client calls and emails within an agreed service standard.",
+  "Client Journey: I understand the client experience across a matter — from first enquiry to file closure.",
+  "Client Feedback: I know how to collect and use client feedback (e.g. NPS, CSAT) to improve service.",
+  "Loyalty & Referrals: I understand what drives client retention and referrals in legal practice.",
+  "Confidentiality & Data: I understand my obligations on client confidentiality and personal data protection.",
+  "Client-Centred Practice: I can describe what a client-centred culture looks like in a law firm or legal department."
+];
+
 const FINANCE_RATINGS = [
   { q: "Clarity of Explanation", sub: "Did they explain the issue in simple, understandable language?" },
   { q: "Transparency", sub: "Did you feel the information was open and honest?" },
@@ -617,6 +740,7 @@ document.addEventListener('DOMContentLoaded', () => {
   checkSetupBanner();
   buildShuffledQuestions();
   buildSelfRatingTable();
+  buildLegalRatingTable();
   buildFinanceRatings();
   buildQuiz();
   const today = new Date().toLocaleDateString('en-ZA');
@@ -628,8 +752,8 @@ function showTab(tab) {
   document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
   document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
   document.getElementById('tab-' + tab).classList.add('active');
-  const tabs = ['home','pre','final','finance'];
-  document.querySelectorAll('.tab-btn')[tabs.indexOf(tab)].classList.add('active');
+  const btn = document.querySelector(`.tab-btn[data-tab="${tab}"]`);
+  if (btn) btn.classList.add('active');
   window.scrollTo(0, 0);
 }
 
@@ -643,6 +767,22 @@ function buildSelfRatingTable() {
     let cells = '';
     for (let r = 1; r <= 5; r++) {
       cells += `<td class="num-cell"><label><input type="radio" name="pre_r${i}" value="${r}"><span class="rating-dot"></span></label></td>`;
+    }
+    tr.innerHTML = `<td>${i+3}. ${stmt}</td>${cells}`;
+    tbody.appendChild(tr);
+  });
+}
+
+// =====================
+// LEGAL RATING TABLE
+// =====================
+function buildLegalRatingTable() {
+  const tbody = document.getElementById('legalRatingBody');
+  LEGAL_RATINGS.forEach((stmt, i) => {
+    const tr = document.createElement('tr');
+    let cells = '';
+    for (let r = 1; r <= 5; r++) {
+      cells += `<td class="num-cell"><label><input type="radio" name="leg_r${i}" value="${r}"><span class="rating-dot"></span></label></td>`;
     }
     tr.innerHTML = `<td>${i+3}. ${stmt}</td>${cells}`;
     tbody.appendChild(tr);
@@ -873,6 +1013,38 @@ function submitPre() {
 }
 
 // =====================
+// LEGAL PRE-TRAINING SUBMIT
+// =====================
+function submitLegal() {
+  const name = document.getElementById('legName').value.trim();
+  if (!name) { alert('Please enter your name.'); return; }
+
+  const ratings = {};
+  LEGAL_RATINGS.forEach((_, i) => {
+    const checked = document.querySelector(`input[name="leg_r${i}"]:checked`);
+    ratings[`r${i+3}`] = checked ? checked.value : '';
+  });
+
+  sendToSheet('legal_pre_survey', {
+    timestamp: new Date().toISOString(),
+    name,
+    organisation: document.getElementById('legOrg').value.trim(),
+    org_code: document.getElementById('legOrgCode').value.trim(),
+    role: document.getElementById('legRole').value,
+    practice_area: document.getElementById('legPractice').value,
+    tenure: document.getElementById('legTenure').value,
+    ...ratings,
+    q17: document.getElementById('legQ17').value.trim(),
+    q18: document.getElementById('legQ18').value.trim(),
+    q19: document.getElementById('legQ19').value.trim(),
+    q20: document.getElementById('legQ20').value.trim()
+  });
+
+  document.getElementById('legalForm').style.display = 'none';
+  document.getElementById('legalSuccess').classList.add('visible');
+}
+
+// =====================
 // FINANCE SUBMIT
 // =====================
 function submitFinance() {
@@ -971,6 +1143,10 @@ function clearForm(type) {
     document.getElementById('preRole').value = '';
     document.getElementById('preTenure').value = '';
     document.querySelectorAll('#selfRatingBody input[type="radio"]').forEach(r => r.checked = false);
+  } else if (type === 'legal') {
+    ['legName','legOrg','legOrgCode','legQ17','legQ18','legQ19','legQ20'].forEach(id => document.getElementById(id).value = '');
+    ['legRole','legPractice','legTenure'].forEach(id => document.getElementById(id).value = '');
+    document.querySelectorAll('#legalRatingBody input[type="radio"]').forEach(r => r.checked = false);
   } else if (type === 'finance') {
     ['finStaff','finAssessor','finDept','finOrgCode','finQ8','finQ9','finQ10','finQ11why'].forEach(id => document.getElementById(id).value = '');
     document.querySelectorAll('#financeForm input[type="radio"]').forEach(r => r.checked = false);
